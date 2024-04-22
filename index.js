@@ -12,6 +12,14 @@ require("dotenv").config();
 
 const Database= require('./Config/config')
 
+const router= require('./Routers/userRouter')
+
+app.get('/',(req,res)=>{
+    res.send('Welcome, feel free to stream any Movie of your choice!')
+})
+
+app.use('/api/v1', router)
+
 const Port = process.env.PORT || 1234;
 
 app.listen(Port, () => {
