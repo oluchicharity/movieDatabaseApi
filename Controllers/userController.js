@@ -1,8 +1,10 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const userModel = require('../Models/userModel');
+const Emails= require('../Email')
+const jwt= require('jsonwebtoken')
 
-exports.createUser = async (req, res) => {
+      exports.createUser = async (req, res) => {
     try {
         const { Fullname, Email, Password } = req.body;
 
@@ -38,3 +40,48 @@ exports.createUser = async (req, res) => {
         res.status(500).json(error.message);
     }
 };
+
+
+exports.Login = async (req, res) => {
+    try {
+      const { Email, Password } = req.body;
+  
+      if (!Email || !Password) {
+        return res.status(400).json({ error: 'Email and Password are required' });
+      }
+  
+      const user = await userModel.findOne({ Email });
+  
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      const passwordMatch = await bcrypt.compare(Password, user.Password);
+  
+      if (!passwordMatch) {
+        return res.status(401).json({ error: 'Invalid password' });
+      }
+  
+      const token = jwt.sign(
+        { userId: user._id, Email: user.Email },
+        process.env.SECRET,
+        { expiresIn: '5d' }
+      );
+  
+      await Emails({
+        email: user.Email,
+        subject: 'Successful Login',
+        html: '<p>You have successfully logged into movie Api.</p>',
+      });
+  
+      res.json({
+        message: 'Welcome',
+        user: { Email: user.Email, Fullname: user.Fullname },
+        token
+      });
+    } catch (error) {
+      console.error('Error during login:', error);
+      res.status(500).json(error.message);
+    }
+  };
+  
