@@ -81,7 +81,48 @@ exports.Login = async (req, res) => {
       });
     } catch (error) {
       console.error('Error during login:', error);
+      return res.status(500).json(error.message);
+    }
+  };
+  
+ 
+
+  exports.getOneUser = async (req, res) => {
+    try {
+      const id = req.params.id;
+  
+      // Find the user by ID in the database using findById
+      const user = await userModel.findById(id);
+  
+      // Check if the user exists
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      // Return the user as JSON response
+      res.json(user);
+    } catch (error) {
+      console.error('Error finding user:', error);
       res.status(500).json(error.message);
     }
   };
   
+
+  exports. getAllUsers= async (req,res)=>{
+
+    try {
+        
+        const users= await userModel.find()
+
+      if(!users){
+        return res.status(404).json('No users found')
+      }
+
+      return res.json(users)
+    } catch (error) {
+        console.error('Error finding users:', error);
+      res.status(500).json(error.message);
+    }
+
+
+  }
