@@ -142,4 +142,27 @@ exports.Login = async (req, res) => {
     }
   }
 
-  
+exports.updateUser= async (req,res)=>{
+    try {
+        const userId= req.params.id
+
+        const updateData= req.body
+
+        const updatedUser= await userModel.findByIdAndUpdate(userId, updateData, {new:true})
+
+        if(!updatedUser){
+            return res.json(404).json('user to be updated not found')
+        }
+
+        await Emails({
+            email: updatedUser.Email,
+            subject: 'You just updated your profile',
+            html: '<p>an update has taken place on your profile, please notify us if this wasnt from you</p>',
+          });
+
+        return res.json(updatedUser)
+    } catch (error) {
+        console.error('Error:', error);
+      res.status(500).json(error.message);
+    }
+}
