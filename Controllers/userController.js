@@ -123,6 +123,23 @@ exports.Login = async (req, res) => {
         console.error('Error finding users:', error);
       res.status(500).json(error.message);
     }
-
-
   }
+
+  exports.deleteUser= async (req,res)=>{
+    try {
+        const userId= req.params.id
+
+        const user= await userModel.findByIdAndDelete(userId)
+        
+        if(!user){
+            return res.status(404).json(`User to be deleted does not exist`)
+        }
+
+        return res.json('This user has been deleted successfully')
+    } catch (error) {
+        console.error('Error:', error);
+      res.status(500).json(error.message);
+    }
+  }
+
+  
