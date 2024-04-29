@@ -35,3 +35,35 @@ exports.addMovie =async (req,res)=>{
 }
 
 
+exports.getAllMovies= async (req,res)=>{
+    try {
+
+    const Movies= await movieModel.find()
+
+    if(!Movies){
+        res.status(404).json('there are no movies available')
+    }
+
+    res.status(200).json(Movies)
+        
+    } catch (error) {
+        console.error('Error getting movies', error.message);
+        res.status(500).json(error.message);   
+    }
+}
+
+
+exports.getOneMovie= async (req,res)=>{
+    try {
+        const id= req.params.id
+        const movie= await movieModel.findById(id)
+        if(!movie){
+            res.status(404).json('this movie is not yet available')
+        }
+
+        res.status(200).json(movie)
+    } catch (error) {
+        console.error('cannot get this movie', error.message);
+        res.status(500).json(error.message);   
+    }
+}
