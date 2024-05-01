@@ -16,7 +16,7 @@ const userRouter= require('./Routers/userRouter')
 const movieRouter= require('./Routers/movieRouter')
 
 app.get('/',(req,res)=>{
-    res.send('Welcome, feel free to stream any Movie of your choice!')
+    res.send('Welcome, feel free to get details on your favorite films')
 })
 
 app.use('/api/v1', userRouter,movieRouter)
